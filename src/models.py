@@ -5,11 +5,25 @@ db = SQLAlchemy()
 class People(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
+    planet = db.Column(db.String(120), unique=True, nullable=False)
 
     def serialize(self):
         return {
             "id": self.id,
             "name": self.name,
+            "planet": self.planet
+        }
+
+class Planet(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=True, nullable=False)
+    density = db.Column(db.String(120), unique=True, nullable=False)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "density": self.planet
         }
 
 class User(db.Model):
