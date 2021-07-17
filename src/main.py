@@ -42,6 +42,19 @@ def get_people():
 
     return jsonify(response_body), 200
 
+@app.route('/people', methods=['POST'])
+def post_people():
+    body = request.get_json()
+    print(body)
+    people = People(name=body['name'])
+    db.session.add(people)
+    db.session.commit()
+    response_body = {
+        "msg": "Hello, this is your POST /people response "
+    }
+
+    return jsonify(response_body), 200
+
 @app.route('/planet', methods=['GET'])
 def get_planet():
     query_planet = Planet.query.all()
