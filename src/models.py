@@ -17,8 +17,7 @@ class People(db.    Model):
         return {
             "id": self.id,
             "name": self.name,
-            "homeworld": self.homeworld,
-            "favorites": self.favorites
+            "homeworld": self.homeworld
         }
 
 class Planet(db.Model):
@@ -63,28 +62,24 @@ class Vehicles(db.Model):
             "favorites": self.favorites
         }
 
-class Favorites(db.Model):
-    __tablename__ = 'favorites'
-    id_fav = db.Column(db.Integer, primary_key=True)
+class Favorites_people(db.Model):
+    __tablename__ = 'favorites_people'
+    id = db.Column(db.Integer, primary_key=True)
     favorites = db.Column(db.Integer, primary_key=True)
-    planet_fav = db.Column(db.Integer, db.ForeignKey('planet.id'), nullable=True)
-    people_fav = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=True)
-    vehicles_fav = db.Column(db.Integer, db.ForeignKey('vehicles.id'), nullable=True)
+    people = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=True)
     people_favorites =  db.relationship ('People', lazy=True)
     userfavorites =  db.relationship ('User', lazy=True)
 
     
     
     def __repr__(self):
-        return '<Favorites %r>' % self.favorites
+        return self.favorites_people
 
     def serialize(self):
         return {
-            "id_fav": self.id_fav,
+            "id": self.id_fav,
             "favorites": self.favorites,
-            "planet_fav": self.planet_fav,
-            "people_fav": self.people_fav,
-            "vehicles_fav": self.vehicles_fav
+            "people": self.people
         }
 
 class User(db.Model):
@@ -93,7 +88,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-    favorites = db.Column(db.Integer, db.ForeignKey('favorites.id_fav'))
+    favorites = db.Column(db.Integer, db.ForeignKey('favorites_people.id'))
 
     def __repr__(self):
         return '<User %r>' % self.email

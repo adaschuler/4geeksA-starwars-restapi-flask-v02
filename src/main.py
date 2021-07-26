@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, Favorites, People, Planet, Vehicles
+from models import db, User, Favorites_people, People, Planet, Vehicles
 #from models import Person
 
 app = Flask(__name__)
@@ -77,11 +77,14 @@ def get_vehicles():
 
     return jsonify(response_body), 200    
 
-@app.route('/favorites', methods=['GET'])
-def handle_favorites():
-
+@app.route('/favorites_people', methods=['GET'])
+def handle_favorites_people():
+    query_favorites_people = Favorites_people.query.all()
+    query_favorites_people = list(map(lambda x: x.serialize(), query_favorites_people))
+    print(query_favorites_people)
     response_body = {
-        "msg": "Hello, this is your GET /favorites response "
+        "msg": "Hello, this is your GET /favorites_people response ",
+        "favorites_people": query_favorites_people
     }
 
     return jsonify(response_body), 200
@@ -89,6 +92,21 @@ def handle_favorites():
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=PORT, debug=False)
+
+
+@app.route('/favorites_people', methods=['POST'])
+def post_favorites_people():
+    body = request.get_json()
+    print(body)  
+    favorites_people = Favorites_people(name=body['favorites'])
+    people = People(name=body['people.id'])
+    db.session.add(favorites_people)
+    db.session.commit()
+    response_body = {
+        "msg": "Hello, this is your POST /favorites_people response "
+    }
+
+    return jsonify(response_body), 200
 
 @app.route('/user', methods=['GET'])
 def handle_hello():
