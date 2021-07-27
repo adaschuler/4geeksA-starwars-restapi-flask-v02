@@ -3,12 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-class People(db.    Model):
+class People(db.Model):
     __tablename__ = 'people'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
     homeworld = db.Column(db.Integer, db.ForeignKey('planet.id'))
     planet = db.relationship ('Planet', lazy=True)
+    people_favorites =  db.relationship ('Favoritespeople', lazy=True)
 
     def __repr__(self):
         return '<People %r>' % self.name
@@ -35,8 +36,7 @@ class Planet(db.Model):
             "id": self.id,
             "name": self.name,
             "density": self.density,
-            "gravity": self.gravity,
-            "favorites": self.favorites
+            "gravity": self.gravity
         }
 
 class Vehicles(db.Model):
@@ -47,7 +47,6 @@ class Vehicles(db.Model):
     manufacturer =  db.Column( db.String(80), nullable=False)
     pilots = db.Column(db.Integer, db.ForeignKey('people.id'))
     user =  db.Column( db.String(80), nullable=False)
-
     
     def __repr__(self):
         return '<Vehicles %r>' % self.name
@@ -58,28 +57,23 @@ class Vehicles(db.Model):
             "name": self.name,
             "model": self.model,
             "manufacturer": self.manufacturer,
-            "pilots": self.pilots,
-            "favorites": self.favorites
+            "pilots": self.pilots
         }
 
-class Favorites_people(db.Model):
-    __tablename__ = 'favorites_people'
+class Favoritespeople(db.Model):
+    __tablename__ = 'favoritespeople'
     id = db.Column(db.Integer, primary_key=True)
-    favorites = db.Column(db.Integer, primary_key=True)
-    people = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=True)
-    people_favorites =  db.relationship ('People', lazy=True)
-    userfavorites =  db.relationship ('User', lazy=True)
-
-    
-    
+    people = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False)
+    favorites = db.Column(db.Integer, db.ForeignKey('user.id'))
+           
     def __repr__(self):
         return self.favorites_people
 
     def serialize(self):
         return {
             "id": self.id_fav,
-            "favorites": self.favorites,
-            "people": self.people
+            "people": self.people,
+            "favorites":self.favorites
         }
 
 class User(db.Model):
@@ -88,7 +82,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-    favorites = db.Column(db.Integer, db.ForeignKey('favorites_people.id'))
+    userfavorites =  db.relationship ('Favoritespeople', lazy=True)
 
     def __repr__(self):
         return '<User %r>' % self.email
@@ -96,7 +90,6 @@ class User(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email,
-            "favorites": self.favorites
+            "email": self.email
             # do not serialize the password, its a security breach
         }

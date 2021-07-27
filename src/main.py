@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, Favorites_people, People, Planet, Vehicles
+from models import db, User, Favoritespeople, People, Planet, Vehicles
 #from models import Person
 
 app = Flask(__name__)
@@ -77,14 +77,14 @@ def get_vehicles():
 
     return jsonify(response_body), 200    
 
-@app.route('/favorites_people', methods=['GET'])
-def handle_favorites_people():
-    query_favorites_people = Favorites_people.query.all()
-    query_favorites_people = list(map(lambda x: x.serialize(), query_favorites_people))
-    print(query_favorites_people)
+@app.route('/favoritespeople', methods=['GET'])
+def handle_favoritespeople():
+    query_favoritespeople = Favoritespeople.query.all()
+    query_favoritespeople = list(map(lambda x: x.serialize(), query_favoritespeople))
+    print(query_favoritespeople)
     response_body = {
-        "msg": "Hello, this is your GET /favorites_people response ",
-        "favorites_people": query_favorites_people
+        "msg": "Hello, this is your GET /favoritespeople response ",
+        "favoritespeople": query_favoritespeople
     }
 
     return jsonify(response_body), 200
@@ -94,16 +94,16 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=PORT, debug=False)
 
 
-@app.route('/favorites_people', methods=['POST'])
-def post_favorites_people():
+@app.route('/favoritespeople', methods=['POST'])
+def post_favoritespeople():
     body = request.get_json()
-    print(body)  
-    favorites_people = Favorites_people(name=body['favorites'])
-    people = People(name=body['people.id'])
-    db.session.add(favorites_people)
+    print(body)
+    people = People(name=body['people'])
+    user = User(name=body['favorites'])
+    db.session.add(favoritespeople)
     db.session.commit()
     response_body = {
-        "msg": "Hello, this is your POST /favorites_people response "
+        "msg": "Hello, this is your POST /favoritespeople response "
     }
 
     return jsonify(response_body), 200
