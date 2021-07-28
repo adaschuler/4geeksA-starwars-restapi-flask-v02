@@ -9,7 +9,7 @@ class People(db.Model):
     name = db.Column(db.String(120), unique=True, nullable=False)
     homeworld = db.Column(db.Integer, db.ForeignKey('planet.id'))
     planet = db.relationship ('Planet', lazy=True)
-    people_favorites =  db.relationship ('Favoritespeople', lazy=True)
+    people_favorites = db.relationship('Favoritespeople', backref="people", lazy=True)
 
     def __repr__(self):
         return '<People %r>' % self.name
@@ -63,17 +63,35 @@ class Vehicles(db.Model):
 class Favoritespeople(db.Model):
     __tablename__ = 'favoritespeople'
     id = db.Column(db.Integer, primary_key=True)
-    people = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False)
-    favorites = db.Column(db.Integer, db.ForeignKey('user.id'))
+    people_id = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
            
     def __repr__(self):
-        return self.favorites_people
+        return self.id
 
     def serialize(self):
         return {
-            "id": self.id_fav,
-            "people": self.people,
-            "favorites":self.favorites
+            "id": self.id,
+            "people_id": self.people_id,
+            "people_name":self.people.name,
+            "user_id":self.user_id
+        }
+
+class Favoritespeople(db.Model):
+    __tablename__ = 'favoritespeople'
+    id = db.Column(db.Integer, primary_key=True)
+    people_id = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+           
+    def __repr__(self):
+        return self.id
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "people_id": self.people_id,
+            "people_name":self.people.name,
+            "user_id":self.user_id
         }
 
 class User(db.Model):
@@ -82,7 +100,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-    userfavorites =  db.relationship ('Favoritespeople', lazy=True)
+    favorites_people = db.relationship('Favoritespeople', backref="user", lazy=True)
 
     def __repr__(self):
         return '<User %r>' % self.email
@@ -90,6 +108,10 @@ class User(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email
+            "email": self.email,
+            "favoritespeople": self.getFavoritesPeople()
             # do not serialize the password, its a security breach
         }
+
+    def getFavoritesPeople(self):
+        return list(map(lambda fav: fav.serialize(),self.favorites_people))
