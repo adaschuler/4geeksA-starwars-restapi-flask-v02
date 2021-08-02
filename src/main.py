@@ -68,14 +68,41 @@ def get_planet():
 
     return jsonify(response_body), 200
 
-@app.route('/vehicles', methods=['GET'])
-def get_vehicles():
-
+@app.route('/planet', methods=['POST'])
+def post_planet():
+    body = request.get_json()
+    planet = Planet(name=body['name'])
+    db.session.add(planet)
+    db.session.commit()
     response_body = {
-        "msg": "Hello, this is your GET /vehicles response "
+        "msg": "Hello, this is your POST /planet response "
     }
 
-    return jsonify(response_body), 200    
+    return jsonify(response_body), 200
+
+@app.route('/vehicles', methods=['GET'])
+def get_vehicles():
+    query_vehicles = Vehicles.query.all()
+    query_vehicles = list(map(lambda x: x.serialize(), query_vehicles))
+    print(query_vehicles)
+    response_body = {
+        "msg": "Hello, this is your GET /vehicles response ",
+        "vehicles": query_vehicles
+    }
+
+    return jsonify(response_body), 200  
+
+@app.route('/vehicles', methods=['POST'])
+def post_vehicles():
+    body = request.get_json()
+    vehicles = Vehicles(name=body['name'])
+    db.session.add(vehicles)
+    db.session.commit()
+    response_body = {
+        "msg": "Hello, this is your POST /vehicles response "
+    }
+
+    return jsonify(response_body), 200  
 
 # @app.route('/favoritespeople', methods=['GET'])
 # def handle_favoritespeople():
