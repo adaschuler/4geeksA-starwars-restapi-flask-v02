@@ -155,36 +155,6 @@ def post_vehicles():
 
     return jsonify(response_body), 200  
 
-# @app.route('/favoritespeople', methods=['GET'])
-# def handle_favoritespeople():
-#     query_favoritespeople = Favoritespeople.query.all()
-#     query_favoritespeople = list(map(lambda x: x.serialize(), query_favoritespeople))
-#     print(query_favoritespeople)
-#     response_body = {
-#         "msg": "Hello, this is your GET /favoritespeople response ",
-#         "favoritespeople": query_favoritespeople
-#     } 
-
-#     return jsonify(response_body), 200
-
-# if __name__ == '__main__':
-#     PORT = int(os.environ.get('PORT', 3000))
-#     app.run(host='0.0.0.0', port=PORT, debug=False)
-
-
-# @app.route('/favoritespeople', methods=['POST'])
-# def post_favoritespeople():
-#     body = request.get_json()
-#     print(body)
-#     people = People(name=body['people'])
-#     user = User(name=body['favorites'])
-#     db.session.add(favoritespeople)
-#     db.session.commit()
-#     response_body = {
-#         "msg": "Hello, this is your POST /favoritespeople response "
-#     }
-
-#     return jsonify(response_body), 200
 
 @app.route('/user', methods=['GET'])
 def handle_hello():
