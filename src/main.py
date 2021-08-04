@@ -42,11 +42,28 @@ def get_people():
 
     return jsonify(response_body), 200
 
+@app.route('/people/<int:id>', methods=['DELETE'])
+def delete_people(id):
+    people_delete = People.query.get(id)
+    if not people_delete:
+        response_body = {
+            "msg": "Hello, this is your DELETE /people response ",
+            "people": "people no existe, no puede ser eliminado"
+        }
+        return jsonify(response_body), 200        
+    db.session.delete(people_delete)
+    db.session.commit()
+    response_body = {
+        "msg": "Hello, this is your DELETE /people response ",
+        "people": "personaje eliminado"
+    }
+    return jsonify(response_body), 200
+
 @app.route('/people', methods=['POST'])
 def post_people():
     body = request.get_json()
     print(body)
-    people = People(name=body['name'])
+    people = People(name=body['name'],homeworld=body['homeworld'])
     planet = Planet(name=body['planet'])
     db.session.add(people)
     db.session.commit()
@@ -68,10 +85,27 @@ def get_planet():
 
     return jsonify(response_body), 200
 
+@app.route('/planet/<int:id>', methods=['DELETE'])
+def delete_planet(id):
+    planet_delete = Planet.query.get(id)
+    if not planet_delete:
+        response_body = {
+            "msg": "Hello, this is your DELETE /planet response ",
+            "planet": "planeta no existe, no puede ser eliminado"
+        }
+        return jsonify(response_body), 200        
+    db.session.delete(planet_delete)
+    db.session.commit()
+    response_body = {
+        "msg": "Hello, this is your DELETE /planet response ",
+        "planet": "planeta eliminado"
+    }
+    return jsonify(response_body), 200
+
 @app.route('/planet', methods=['POST'])
 def post_planet():
     body = request.get_json()
-    planet = Planet(name=body['name'])
+    planet = Planet(name=body['name'],density=body['density'],gravity=body['gravity'])
     db.session.add(planet)
     db.session.commit()
     response_body = {
@@ -90,12 +124,29 @@ def get_vehicles():
         "vehicles": query_vehicles
     }
 
-    return jsonify(response_body), 200  
+    return jsonify(response_body), 200
+
+@app.route('/vehicles/<int:id>', methods=['DELETE'])
+def delete_vehicles(id):
+    vehicles_delete = Vehicles.query.get(id)
+    if not vehicles_delete:
+        response_body = {
+            "msg": "Hello, this is your DELETE /vehicles response ",
+            "vehicles": "vehicles no existe, no puede ser eliminado"
+        }
+        return jsonify(response_body), 200        
+    db.session.delete(vehicles_delete)
+    db.session.commit()
+    response_body = {
+        "msg": "Hello, this is your DELETE /vehicles response ",
+        "vehicles": "vehiculo eliminado"
+    }
+    return jsonify(response_body), 200      
 
 @app.route('/vehicles', methods=['POST'])
 def post_vehicles():
     body = request.get_json()
-    vehicles = Vehicles(name=body['name'])
+    vehicles = Vehicles(name=body['name'],model=body['model'],manufacturer=body['manufacturer'],pilots=body['pilots'])
     db.session.add(vehicles)
     db.session.commit()
     response_body = {

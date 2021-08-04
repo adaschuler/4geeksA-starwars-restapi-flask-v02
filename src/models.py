@@ -26,7 +26,7 @@ class Planet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
     density = db.Column(db.String(120), unique=True, nullable=False)
-    gravity = db.Column(db.Integer)
+    gravity = db.Column(db.String(120))
     planet_favorites = db.relationship('Favoritesplanet', backref="planet", lazy=True)
             
     def __repr__(self):
@@ -123,7 +123,7 @@ class User(db.Model):
     favorites_vehicles = db.relationship('Favoritesvehicles', backref="user", lazy=True)
 
     def __repr__(self):
-        return '<User %r>' % self.email
+        return '<User %s>' % self.email
 
     def serialize(self):
         return {
